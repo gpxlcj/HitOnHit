@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+             <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>SilenceMusic</title>
+	<!-- 引用的五秒小游戏的api -->
+	<script src= "http://static.api.5miao.com/js/api.js" ></script>
+	<!-- 引用的cocos-2d-lite的包 -->
+   	<script type="text/javascript" src="src/cocos2d.js" charset="UTF-8"></script>
+   	<!-- 自己的js文件 -->
+  	<script type="text/javascript" src="src/main.js"></script>
+</head>
+<body>
+ 	<canvas id="gameCanvas" width="1080" height="720" background-color="#f4cfaf"></canvas>
+	<script type="text/javascript">
+	if (yw.isEnv === 'weixin')
+	{
+		yw.init({gameId: '10000023', width: 1080, height: 720, pvEnabled:true});
+	}
+	if (yw.isEnv === 'android')
+ 	{
+		yw.init({gameId: '10000023', width: 1920, height: 1080, pvEnabled:true});
+ 	}
+ 	</script>
+</body>
+</html>

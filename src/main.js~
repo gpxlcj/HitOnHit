@@ -1,0 +1,508 @@
+
+var button_help;
+var button_pick;
+var button_start;
+var INDEX_BUTTON_SIZE_SCALE = 0.3;
+var INDEX_BOY_SIZE_SCALE = 0.25;
+
+var layer_startUI;
+var layer_gameUI;
+var layer_scoreUI;
+var layer_shareUI;
+
+var help_part;
+ 
+
+var total;
+var third_num;
+var first_num;
+var second_num;
+var now_third;
+var now_second;
+var now_first;
+
+var first_label;
+var second_label;
+var third_label;
+var final_label;
+
+window.onload = function(){
+	cc.game.onStart = function(){
+      	//load resources
+      		cc.view.adjustViewPort(true); 
+      		if (cc.sys.isMobile) 
+             		cc.view.setDesignResolutionSize(500,320,cc.ResolutionPolicy.FIXED_WIDTH); 
+    		else 
+    			cc.view.setDesignResolutionSize(540,320,cc.ResolutionPolicy.SHOW_ALL); 
+   		cc.view.resizeWithBrowserSize(true); 
+      		cc.LoaderScene.preload(["src/img/word_click.png"], function () {
+          			var MyScene = cc.Scene.extend({
+              			onEnter: function(){
+              				this._super();
+              				layer_startUI = new StartUI()
+              				this.addChild(layer_startUI, 0)
+              				layer_gameUI = new GameUI()
+              				this.addChild(layer_gameUI, -1)
+              				layer_scoreUI = new ScoreUI()
+              				this.addChild(layer_scoreUI, -2)
+              			}
+          			})
+          			cc.director.runScene(new MyScene());
+      		}, this);
+	};
+             var ScoreUI = cc.Layer.extend({
+             	ctor: function(){
+             		this._super();
+             		var bg_color = new cc.LayerColor(cc.color("#f4cfaf"));
+             		this.addChild(bg_color);
+             		},
+             	onEnter:function () {
+          				this._super();
+          				var size = cc.director.getWinSize();
+
+          				var sprite = cc.Sprite.create("src/img/word_click.png");
+
+          				sprite.setPosition(size.width / 2, size.height / 1.2);
+			             sprite.setScale(0.3);
+			             this.addChild(sprite, 0);
+
+                              	             final_label = cc.LabelTTF.create("your score is"+ total+"!!", "Arial", 40);
+                              	             final_label.setPosition(size.width / 2, size.height / 2);
+                             	             this.addChild(final_label, 1);
+
+
+		                          button_restart = cc.Sprite.create("src/img/button_start.png");
+			             button_restart.setPosition(size.width /2, size.height / 4);
+		                          button_restart.setScale(INDEX_BUTTON_SIZE_SCALE);
+		              //            this.addChild(button_restart, 1);
+       				cc.eventManager.addListener(help_touchlistener.clone(), button_start);
+                  		}
+             })
+             var GameUI = cc.Layer.extend({
+             	ctor: function(){
+             		this._super();
+             		var bg_color = new cc.LayerColor(cc.color("#f4cfaf"));
+             		this.addChild(bg_color);
+             		},
+             	onEnter: function () {
+          				this._super();
+
+                  		},
+                  	initGame: function(){
+                  		          	var size = cc.director.getWinSize();
+          				var sprite = cc.Sprite.create("src/img/word_click.png");
+
+          				sprite.setPosition(size.width / 2, size.height / 1.2);
+			             sprite.setScale(0.3);
+			             this.addChild(sprite, 0);
+
+                                                    now_third = parseInt(Math.random()*30);
+				now_second = parseInt(Math.random()*30);
+				now_first = parseInt(Math.random()*30);
+				
+				first_num = 0;
+				second_num = 0;
+				third_num = 0;
+				total = 0;
+
+			             button_first = cc.Sprite.create("src/img/redround.png");
+			             button_first.setPosition(size.width / 5, size.height / 4.5);
+			             button_first.setScale(INDEX_BUTTON_SIZE_SCALE);
+			             this.addChild(button_first, 1);
+       				cc.eventManager.addListener(game_listener, button_first);
+
+                              	             first_label = cc.LabelTTF.create(first_num.toString()+"/"+now_first.toString(), "Arial", 20);
+                              	             first_label.setPosition(size.width / 5, size.height / 2);
+                             	             this.addChild(first_label, 1);
+
+			             button_second = cc.Sprite.create("src/img/blueround.png");
+			             button_second.setPosition(size.width / 2, size.height / 4.5);
+        			             button_second.setScale(INDEX_BUTTON_SIZE_SCALE);
+			             this.addChild(button_second, 1);
+       				cc.eventManager.addListener(game_listener.clone(), button_second);
+
+                              	             second_label = cc.LabelTTF.create(second_num.toString()+"/"+now_second.toString(), "Arial", 20);
+                              	             second_label.setPosition(size.width / 2, size.height / 2);
+                             	             this.addChild(second_label, 1);
+
+		                          button_third = cc.Sprite.create("src/img/greenround.png");
+			             button_third.setPosition(size.width /1.25, size.height / 4.5);
+		                          button_third.setScale(INDEX_BUTTON_SIZE_SCALE);
+		                          this.addChild(button_third, 1);
+       				cc.eventManager.addListener(game_listener.clone(), button_third);
+
+                              	             third_label = cc.LabelTTF.create(third_num.toString()+"/"+now_third.toString(), "Arial", 20);
+                              	             third_label.setPosition(size.width / 1.25, size.height / 2);
+                             	             this.addChild(third_label, 1);
+
+                  	}
+             })
+	var StartUI = cc.Layer.extend({
+             	ctor: function(){
+             		this._super();
+             		var bg_color = new cc.LayerColor(cc.color("#f4cfaf"));
+             		this.addChild(bg_color);
+             		},
+             	onEnter:function () {
+          				this._super();
+          				var size = cc.director.getWinSize();
+
+          				var sprite = cc.Sprite.create("src/img/word_click.png");
+
+          				sprite.setPosition(size.width / 2, size.height / 1.2);
+			             sprite.setScale(0.3);
+			             this.addChild(sprite, 0);
+
+			             button_help = cc.Sprite.create("src/img/kid_singing.png");
+			             button_help.setPosition(size.width / 5, size.height / 2);
+			             button_help.setScale(INDEX_BOY_SIZE_SCALE);
+			             this.addChild(button_help, 1);
+
+			             button_help = cc.Sprite.create("src/img/button_help.png");
+			             button_help.setPosition(size.width / 5, size.height / 4.5);
+			             button_help.setScale(INDEX_BUTTON_SIZE_SCALE);
+			             this.addChild(button_help, 1);
+       				cc.eventManager.addListener(help_touchlistener, button_help);
+
+			             button_pick = cc.Sprite.create("src/img/kid_rockandroll.png");
+			             button_pick.setPosition(size.width / 2, size.height / 2);
+        			             button_pick.setScale(INDEX_BOY_SIZE_SCALE);
+			             this.addChild(button_pick, 1);
+
+				button_pick = cc.Sprite.create("src/img/button_pick.png");
+			             button_pick.setPosition(size.width / 2, size.height / 4.5);
+        			             button_pick.setScale(INDEX_BUTTON_SIZE_SCALE);
+			             this.addChild(button_pick, 1);
+       				cc.eventManager.addListener(help_touchlistener.clone(), button_pick);
+
+		                          button_start = cc.Sprite.create("src/img/kid_redguitar.png");
+			             button_start.setPosition(size.width /1.25, size.height / 2);
+		                          button_start.setScale(INDEX_BOY_SIZE_SCALE);
+		                          this.addChild(button_start, 1);
+
+		                          button_start = cc.Sprite.create("src/img/button_start.png");
+			             button_start.setPosition(size.width /1.25, size.height / 4.5);
+		                          button_start.setScale(INDEX_BUTTON_SIZE_SCALE);
+		                          this.addChild(button_start, 1);
+       				cc.eventManager.addListener(help_touchlistener.clone(), button_start);
+
+       				help_part = cc.Sprite.create("src/img/help.png");
+       				help_part.setPosition(size.width / 2, size.height /2);
+       				help_part.setScale(0.3);
+       				this.addChild(help_part, -3);
+       				cc.eventManager.addListener(help_touchlistener.clone(), help_part);
+
+                  		}
+             })
+           	//game run
+  	cc.game.run("gameCanvas");
+};
+
+             //listener     
+	var help_touchlistener = cc.EventListener.create({
+	    	event: cc.EventListener.TOUCH_ONE_BY_ONE,
+	    	swallowTouches: true,
+	    	onTouchBegan: function (touch, event){
+	    		var target =  event.getCurrentTarget();
+			var locationInNode = target.convertToNodeSpace(touch.getLocation());    
+	             	var s = target.getContentSize();
+	             	var rect = cc.rect(0, 0, s.width, s.height);
+
+	             	if (cc.rectContainsPoint(rect, locationInNode)) {       // 判断触摸点是否在按钮范围内
+	             		cc.log("sprite began... x = " + locationInNode.x + ", y = " + locationInNode.y);
+	                		target.opacity = 180;
+	                 		return true;
+	             	}
+	             return false; 
+	    	},
+	        	onTouchEnded: function (touch, event) {         // 实现onTouchEnded事件处理回调函数
+	            		var target = event.getCurrentTarget();
+	            		cc.log("sprite onTouchesEnded.. ");
+	            		target.setOpacity(255);
+	            		if (target == button_restart){
+	            			layer_scoreUI.removeFromParent();
+	            			layer_gameUI.init();
+	            		}
+	            		if (target == button_help) {                    
+	                		help_part.setLocalZOrder(4);            // 重新设置 ZOrder，显示的前后顺序将会改变
+	            		             
+	            		} 
+	            		else if (target == button_pick) {
+	                		button_pick.setLocalZOrder(-2);
+	            		}
+	            		else if (target == button_start){
+	            			layer_startUI.removeFromParent();
+	            			layer_gameUI.initGame();
+	            		}
+	            		else if (target == help_part){
+	            			help_part.setLocalZOrder(-4);
+	            		}
+	        	}
+             })
+	
+             var game_listener = cc.EventListener.create({
+	    	event: cc.EventListener.TOUCH_ONE_BY_ONE,
+	    	swallowTouches: true,
+	    	onTouchBegan: function (touch, event){
+	    		var target =  event.getCurrentTarget();
+			var locationInNode = target.convertToNodeSpace(touch.getLocation());    
+	             	var s = target.getContentSize();
+	             	var rect = cc.rect(0, 0, s.width, s.height);
+
+	             	if (cc.rectContainsPoint(rect, locationInNode)) {       // 判断触摸点是否在按钮范围内
+	             		cc.log("sprite began... x = " + locationInNode.x + ", y = " + locationInNode.y);
+	                		target.opacity = 180;
+	                 		return true;
+	             	}
+	             return false; 
+	    	},
+	        	onTouchEnded: function (touch, event) {         // 实现onTouchEnded事件处理回调函数
+	            		var target = event.getCurrentTarget();
+	            		cc.log("sprite onTouchesEnded.. ");
+	            		target.setOpacity(255);
+
+	            		if (target == button_first) {                    
+	                		first_num += 1
+	            			total += 1
+	            			if (first_num >now_first)
+	            			{ 
+	            				layer_gameUI.removeFromParent();
+	            				layer_scoreUI.init();
+	            				total -= 1;
+	            				final_label.setString("your score is  "+ total+"!!");
+	            			}
+	            			else if (first_num == now_first)
+	            			{
+	            				now_first = 0;
+	            				first_num = 0;
+                                                                 if ((now_third == 0)  && (now_second == 0) && (now_first == 0))
+                                                                 {
+                                                                 	rand = parseInt(Math.random()*7);
+                                                                 	if (rand == 0 )
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1;
+                                                                 	}
+                                                                 	else if (rand == 1)
+                                                                 	{
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand == 2)
+                                                                 	{
+                                                                 		now_first = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand == 3)
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand == 4)
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_first = parseInt(Math.random()*70)+1
+                                                                 	}                                                              
+                                                                 	else if (rand == 5)
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand >= 6)
+                                                                 	{
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_first = parseInt(Math.random()*70)+1
+                                                                 	}                          
+	            					third_label.setString(third_num.toString()+"/"+now_third.toString());   
+	            					second_label.setString(second_num.toString()+"/"+now_second.toString());      
+	            					first_label.setString(first_num.toString()+"/"+now_first.toString());                                                        	
+                                                                 }
+	            				first_label.setString(first_num.toString()+"/"+now_first.toString())  
+	            			}
+	            			else
+	            			{
+	            				first_label.setString(first_num.toString()+"/"+now_first.toString())
+	            				var a = parseInt(Math.random()*30)
+	            				var b = parseInt(Math.random()*30)
+	            				var c = parseInt(Math.random()*30)
+	            				if ((a == 10)&&(now_first == 0))
+	            				{
+	            					now_first = parseInt(Math.random()*70)+1
+	            				}
+	            				if ((b == 10)&&(now_second == 0))
+	            				{
+	            					now_second = parseInt(Math.random()*70)+1
+	            				}
+	            				if ((b == 10)&&(now_third == 0))
+	            				{
+	            					now_third = parseInt(Math.random()*70)+1
+	            				}                      
+
+	            				third_label.setString(third_num.toString()+"/"+now_third.toString());   
+	            				second_label.setString(second_num.toString()+"/"+now_second.toString());      
+	            				first_label.setString(first_num.toString()+"/"+now_first.toString());                     	            			
+	            			}
+	            		} 
+	            		else if (target == button_second) {
+	                		second_num += 1
+	            			total += 1
+	            			if (second_num >now_second)
+	            			{
+	            				layer_gameUI.removeFromParent();
+	            				layer_scoreUI.init();
+	            				total -= 1;
+	            				final_label.setString("your score is"+ total+"!!");
+	            			}
+	            			else if (second_num == now_second)
+	            			{
+	            				now_second = 0;
+	            				second_num = 0;
+                                                                 if ((now_third == 0) && (now_second == 0)&&(now_first == 0))
+                                                                 {
+                                                                 	rand = parseInt(Math.random()*7)
+                                                                 	if (rand == 0 )
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand == 1)
+                                                                 	{
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand == 2)
+                                                                 	{
+                                                                 		now_first = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand == 3)
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand == 4)
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_first = parseInt(Math.random()*70)+1
+                                                                 	}                                                              
+                                                                 	else if (rand == 5)
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand >= 6)
+                                                                 	{
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_first = parseInt(Math.random()*70)+1
+                                                                 	}                                                                                      	
+
+	            					third_label.setString(third_num.toString()+"/"+now_third.toString());   
+	            					second_label.setString(second_num.toString()+"/"+now_second.toString());      
+	            					first_label.setString(first_num.toString()+"/"+now_first.toString());      
+                                                                 }
+	            				second_label.setString(second_num.toString()+"/"+now_second.toString())        
+	            			}
+	            			else
+	            			{
+	            				second_label.setString(second_num.toString()+"/"+now_second.toString())    
+	 	            			var a = parseInt(Math.random()*30)
+	            				var b = parseInt(Math.random()*30)
+	            				var c = parseInt(Math.random()*30)
+	            				if ((a == 10)&&(now_first == 0))
+	            				{
+	            					now_first = parseInt(Math.random()*70)+1
+	            				}
+	            				if ((b == 10)&&(now_second == 0))
+	            				{
+	            					now_second = parseInt(Math.random()*70)+1
+	            				}
+	            				if ((b == 10)&&(now_third == 0))
+	            				{
+	            					now_third = parseInt(Math.random()*70)+1
+	            				}           
+
+	            				third_label.setString(third_num.toString()+"/"+now_third.toString());   
+	            				second_label.setString(second_num.toString()+"/"+now_second.toString());      
+	            				first_label.setString(first_num.toString()+"/"+now_first.toString());                                           			
+	            			}
+	            		}
+	            		else if (target == button_third){
+	            			third_num += 1
+	            			total += 1
+	            			if (third_num >now_third)
+	            			{
+	            				layer_gameUI.removeFromParent();
+	            				layer_scoreUI.init();
+	            				total -= 1;
+	            				final_label.setString("your score is"+ total+"!!");
+	            			}
+	            			else if (third_num == now_third)
+	            			{
+	            				now_third = 0;
+	            				third_num = 0;
+                                                                 if ((now_third == 0) && (now_second == 0)&&(now_first == 0))
+                                                                 {
+                                                                 	rand = parseInt(Math.random()*7)
+                                                                 	if (rand == 0 )
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand == 1)
+                                                                 	{
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand == 2)
+                                                                 	{
+                                                                 		now_first = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand == 3)
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand == 4)
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_first = parseInt(Math.random()*70)+1
+                                                                 	}                                                              
+                                                                 	else if (rand == 5)
+                                                                 	{
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 	}
+                                                                 	else if (rand >= 6)
+                                                                 	{
+                                                                 		now_second = parseInt(Math.random()*70)+1
+                                                                 		now_third = parseInt(Math.random()*70)+1
+                                                                 		now_first = parseInt(Math.random()*70)+1
+                                                                 	}                                        
+
+	            					third_label.setString(third_num.toString()+"/"+now_third.toString());   
+	            					second_label.setString(second_num.toString()+"/"+now_second.toString());      
+	            					first_label.setString(first_num.toString()+"/"+now_first.toString());      
+                                                                 }
+
+	            				third_label.setString(third_num.toString()+"/"+now_third.toString());             
+	            			}
+	            			else
+	            			{
+	            				third_label.setString(third_num.toString()+"/"+now_third.toString());
+	            				var a = parseInt(Math.random()*30)
+	            				var b = parseInt(Math.random()*30)
+	            				var c = parseInt(Math.random()*30)
+	            				if ((a == 10)&&(now_first == 0))
+	            				{
+	            					now_first = parseInt(Math.random()*70)+1
+	            				}
+	            				if ((b == 10)&&(now_second == 0))
+	            				{
+	            					now_second = parseInt(Math.random()*70)+1
+	            				}
+	            				if ((b == 10)&&(now_third == 0))
+	            				{
+	            					now_third = parseInt(Math.random()*70)+1
+	            				}                
+
+	            				third_label.setString(third_num.toString()+"/"+now_third.toString());   
+	            				second_label.setString(second_num.toString()+"/"+now_second.toString());      
+	            				first_label.setString(first_num.toString()+"/"+now_first.toString());                                  
+	            			}
+	            		}
+	        	}
+             })
